@@ -30,6 +30,11 @@ namespace AHGame
             }
             catch { }
         }
+        public SoundEffect getSound(String name)
+        {
+            return sounds[name];
+
+        }
         //has to be between 0.0(silence) to 1.0(max)
         public void setMasterSFXVolume(float volume)
         {

@@ -21,6 +21,9 @@ namespace AHGame
         Ticker blackTicker;
         public Color bgColor = Color.Black;
 
+        public Rectangle demension;
+
+
         public DrawingTool(Game1 game)
         {
             this.game = game;
@@ -43,7 +46,7 @@ namespace AHGame
         }
         private void beginBatch()
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
         }
         private void beginBatchWithCam()
         {
@@ -63,7 +66,9 @@ namespace AHGame
         }
         public void drawPlayerSelect(PlayerSelect playerSelect)
         {
-
+            beginBatch();
+            playerSelect.Draw(spriteBatch);
+            endBatch();
         }
         public void draw()
         {
@@ -78,6 +83,11 @@ namespace AHGame
                     gdm.GraphicsDevice.Clear(Color.SkyBlue);
                     drawEntities(game.entities);
                     break;
+                case Game1.gameStates.CREATOR:
+                    gdm.GraphicsDevice.Clear(Color.Green);
+                    drawCreatorGui();
+                    drawEntities(game.entities);
+                    break;
                 case Game1.gameStates.PLAYERSELECT:
                     gdm.GraphicsDevice.Clear(Color.Purple);
                     drawPlayerSelect(game.playerSelect);
@@ -85,6 +95,20 @@ namespace AHGame
             }
             
         }
+
+        internal void drawCreatorGui()
+        {
+            beginBatch();
+            DrawText(spriteBatch, 0, 0, "Testing", 0.5f, 1);
+            DrawText(spriteBatch, 0, 20, game.cb.getBlockType(), 0.5f, 1);
+            DrawText(spriteBatch, 0, 40, game.cb.getPositionAsString(), 0.5f, 1);
+            //DrawText(spriteBatch, 0, 60, game.cb.getRotationAsString(), 0.5f, 1);
+            endBatch();
+
+
+
+        }
+
 
         internal void drawEntities(List<Entity> entities)
         {
@@ -123,27 +147,59 @@ namespace AHGame
             float height = heightRatio * cam.ViewportHeight;// *zoomRatio;
             float height2 = heightRatio2 * cam.ViewportHeight;
 
-            if (cam._pos.X + cam.ViewportWidth < followPoint.X+width)
+            if (isPlayerInside(followPoint))
             {
-                cam.Move(new Vector2((followPoint.X+width) - (cam._pos.X + cam.ViewportWidth / 1), 0));
+                if (cam._pos.X + cam.ViewportWidth < followPoint.X + width)
+                {
+                    cam.Move(new Vector2((followPoint.X + width) - (cam._pos.X + cam.ViewportWidth / 1), 0));
+                }
+                if (cam._pos.X - cam.ViewportWidth > followPoint.X - width)
+                {
+                    cam.Move(new Vector2((followPoint.X - width) - (cam._pos.X - cam.ViewportWidth / 1), 0));
+                }
+                if (followPoint.Y + height2 > cam._pos.Y + cam.ViewportHeight / 1)
+                {
+                    cam.Move(new Vector2(0, (followPoint.Y + height2) - (cam._pos.Y + cam.ViewportHeight / 1)));
+                }
+                if (followPoint.Y - height < cam._pos.Y - cam.ViewportHeight / 1)
+                {
+                    cam.Move(new Vector2(0, (followPoint.Y - height) - (cam._pos.Y - cam.ViewportHeight / 1)));
+                }
             }
-            if (cam._pos.X - cam.ViewportWidth > followPoint.X-width)
+
+            if (isPlayerTooFarOut(followPoint))
             {
-                cam.Move(new Vector2((followPoint.X-width) - (cam._pos.X - cam.ViewportWidth / 1), 0));
+                game.restartLevel = true;
+
             }
-            if (followPoint.Y + height2 > cam._pos.Y + cam.ViewportHeight / 1)
-            {
-                cam.Move(new Vector2(0, (followPoint.Y + height2) - (cam._pos.Y + cam.ViewportHeight / 1)));
-            }
-            if (followPoint.Y - height < cam._pos.Y - cam.ViewportHeight / 1)
-            {
-                cam.Move(new Vector2(0, (followPoint.Y - height) - (cam._pos.Y - cam.ViewportHeight / 1)));     
-            }
+
         }
+
+        public bool isPlayerInside(Vector2 point)
+        {
+            //game.Arena.maxLeft > p1.Position.X || game.Arena.maxRight < p1.Position.X)
+            if(point.X>demension.X && point.X<demension.Y)
+                return true;
+
+            return false;
+
+        }
+
+        public bool isPlayerTooFarOut(Vector2 point)
+        {
+            if (point.X > cam.Pos.X + cam.ViewportWidth/cam.Zoom|| point.X < cam.Pos.X - cam.ViewportWidth/cam.Zoom)
+                return true;
+
+            return false;
+
+
+        }
+
 
         public void Update()
         {
-            followPlayer();
+            if(game.currState==Game1.gameStates.GAME)
+                followPlayer();
 
         }
         public void moveCameraManually(Input input)
@@ -154,6 +210,39 @@ namespace AHGame
             cam.Move(new Vector2(x,y));
             if (input.isJumpPressed())
                 cam.Zoom -= 0.1f;*/
+        }
+
+
+        public void DrawText(SpriteBatch spriteBatch, float x, float y, String text, float size, float fadePercent)
+        {
+
+            char[] tempstrMulti = text.ToCharArray();
+            SpriteFont font = game.fonts[0];
+
+            //drawBorderImage(x - font.MeasureString("A").X * size * game.scale, y - font.MeasureString("A").Y * size * game.scale * 0.5f, 100, (int)(size * game.scale * 0.75f), spriteBatch);
+
+            float drawPosX = 0;
+            float drawPosY = 0;
+            for (int i = 0; i < tempstrMulti.Length; i += 1)
+            {
+                if ("{".Equals("" + tempstrMulti[i]))
+                {
+                    drawPosX = 0;
+                    drawPosY += font.MeasureString("A").Y * size;
+                    continue;
+                }
+                spriteBatch.DrawString(font, "" + tempstrMulti[i],
+                    new Vector2(x + drawPosX, y + drawPosY),
+                    Color.White * fadePercent,
+                    0f,
+                    Vector2.Zero,
+                    //new Vector2(font.MeasureString(tempstrMulti[i]).X / 2, 0), 
+                    1f * size,
+                    SpriteEffects.None,
+                    0);
+                drawPosX += font.MeasureString("" + tempstrMulti[i]).X * size;
+
+            }
         }
     }
 }

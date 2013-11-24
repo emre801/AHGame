@@ -46,11 +46,12 @@ namespace AHGame
         {
             if (isDeathBlock)
             {
-                foreach (Player p in g.players)
+                foreach (Player p in g.playerSelect.getPlayers())
                 {
                     if (fixtureB == p.fixture)
                     {
                         g.restartLevel = true;
+                        g.sfxControl.playSound("death");
 
                     }
 
@@ -96,9 +97,9 @@ namespace AHGame
         {
             spriteBatch.Draw(currSprite.index, new Rectangle((int)ConvertUnits.ToDisplayUnits(body.Position.X),
                 (int)ConvertUnits.ToDisplayUnits(body.Position.Y), (int)width, (int)height), null, Color.White*alpha, 
-                body.Rotation, origin, SpriteEffects.None, (drawLevel+1)/100f);
-            spriteBatch.Draw(currSprite.index, new Rectangle((int)ConvertUnits.ToDisplayUnits(body.Position.X)+5,
-                (int)ConvertUnits.ToDisplayUnits(body.Position.Y)-5, (int)width, (int)height), null, Color.Black*0.3f,
+                body.Rotation, origin, SpriteEffects.None, (drawLevel+2)/100f);
+            spriteBatch.Draw(currSprite.index, new Rectangle((int)ConvertUnits.ToDisplayUnits(body.Position.X)+10,
+                (int)ConvertUnits.ToDisplayUnits(body.Position.Y)-10, (int)width, (int)height), null, Color.Black*0.15f,
                 body.Rotation, origin, SpriteEffects.None, 0);
         }
     }

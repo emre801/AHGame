@@ -36,7 +36,20 @@ namespace AHGame
             turbo=Keys.LeftShift;
             back = Keys.Tab;
             pause = Keys.Enter;
-            start = Keys.Right;
+            start = Keys.LeftShift;
+        }
+
+        public void secondControls()
+        {
+            up = Keys.Up;
+            down = Keys.Down;
+            left = Keys.Left;
+            right = Keys.Right;
+            jump = Keys.NumPad0;
+            turbo = Keys.RightShift;
+            back = Keys.NumPad1;
+            pause = Keys.NumPad2;
+            start = Keys.NumPad3;
         }
 
         public override void Update()

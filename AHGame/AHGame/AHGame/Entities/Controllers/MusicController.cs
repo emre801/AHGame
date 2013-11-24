@@ -38,8 +38,8 @@ namespace AHGame
             if (MediaPlayer.State != MediaState.Playing)
             {
                 Song song = music[name];
-                MediaPlayer.Play(song);
-                MediaPlayer.IsRepeating = false;
+                //MediaPlayer.Play(song);
+                //MediaPlayer.IsRepeating = false;
             }
         }
 

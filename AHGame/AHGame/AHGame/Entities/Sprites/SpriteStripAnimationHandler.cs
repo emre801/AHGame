@@ -18,7 +18,7 @@ namespace AHGame
         private Rectangle texBounds;
         private SoundEffect sound;
         int soundRate = 0;
-        int rateOfSound = 5;
+        int rateOfSound = 2;
         public int CurrentState
         {
             get { return _currentState; }
@@ -109,6 +109,9 @@ namespace AHGame
             {
                 nextState();
                 soundRate++;
+                if (sound != null && soundRate%rateOfSound==0)
+                    sound.Play();
+                
             }
         }
         public void updateFrameRate(float frameRate)
@@ -147,6 +150,22 @@ namespace AHGame
                 spriteBatch.Draw(spriteStrip.index, shiftedDesti, texBounds, Color.Black*0.3f, 0, origin, SpriteEffects.FlipHorizontally, 0);
             }
         }
+
+        public void drawTitle(SpriteBatch spriteBatch, Rectangle desti, Color color, Vector2 origin, bool lookLeft)
+        {
+            Rectangle shiftedDesti = new Rectangle(desti.X + 5, desti.Y - 5, desti.Width, desti.Height);
+            if (lookLeft)
+            {
+                spriteBatch.Draw(spriteStrip.index, shiftedDesti, texBounds, Color.Black * 0.3f, 0, origin, SpriteEffects.None, 0.1f);
+                spriteBatch.Draw(spriteStrip.index, desti, texBounds, color, 0, origin, SpriteEffects.None, 0.11f);
+            }
+            else
+            {
+                spriteBatch.Draw(spriteStrip.index, shiftedDesti, texBounds, Color.Black * 0.3f, 0, origin, SpriteEffects.FlipHorizontally, 0.1f);
+                spriteBatch.Draw(spriteStrip.index, desti, texBounds, color, 0, origin, SpriteEffects.FlipHorizontally, 0.11f);
+            }
+        }
+
 
 
         public void drawCurrentState(SpriteBatch spriteBatch, Vector2 drawPos, Vector2 origin, Rectangle rect, Boolean direction, Vector2 shiftPosition)

@@ -20,6 +20,10 @@ namespace AHGame
         Buttons back { get; set; }
         Buttons pause { get; set; }
         Buttons start { get; set; }
+        Buttons up { get; set; }
+        Buttons down { get; set; }
+        Buttons left { get; set; }
+        Buttons right { get; set; }
 
         
         public XboxInput(Game1 g,PlayerIndex playerIndex)
@@ -33,7 +37,10 @@ namespace AHGame
             back = Buttons.B;
             pause = Buttons.Back;
             start = Buttons.Start;
-
+            up = Buttons.DPadUp;
+            down = Buttons.DPadDown;
+            left = Buttons.DPadLeft;
+            right = Buttons.DPadRight;
         }
 
         public override void Update()
@@ -72,22 +79,34 @@ namespace AHGame
 
         public override bool isUpPressed()
         {
+            if (this.gameState.IsButtonDown(up) && this.previousGameState.IsButtonUp(up))
+                return true;
             return this.gameState.ThumbSticks.Left.Y > 0 && this.previousGameState.ThumbSticks.Left.Y <= 0;
         }
 
 
         public override bool isDownPressed()
         {
+            if (this.gameState.IsButtonDown(down) && this.previousGameState.IsButtonUp(down))
+                return true;
             return this.gameState.ThumbSticks.Left.Y < 0 && this.previousGameState.ThumbSticks.Left.Y >= 0;
         }
 
         //This is going off of the left thumbstick, this will allow for more accurate movement
         public override float moveHorizontal()
         {
+            if (this.gameState.IsButtonDown(left))
+                return -1;
+            else if (this.gameState.IsButtonDown(right))
+                return 1;
             return gameState.ThumbSticks.Left.X;
         }
         public override float moveVertical()
         {
+            if (this.gameState.IsButtonDown(down))
+                return -1;
+            else if (this.gameState.IsButtonDown(up))
+                return 1;
             return gameState.ThumbSticks.Left.Y;
         }
     }

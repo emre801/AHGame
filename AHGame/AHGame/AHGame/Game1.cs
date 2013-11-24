@@ -38,7 +38,7 @@ namespace AHGame
         public Title title;
         public PlayerSelect playerSelect;
 
-        public enum gameStates { TITLE, GAME, PLAYERSELECT }
+        public enum gameStates { TITLE, GAME, PLAYERSELECT,CREATOR }
         public gameStates currState = gameStates.TITLE;
 
         public LevelController levelControl;
@@ -50,9 +50,10 @@ namespace AHGame
         public Sprite black;
         public bool blackOut=false;
 
+        public SpriteFont[] fonts = new SpriteFont[1];
+        public CreatorBlock cb;
 
-
-        public LinkedList<Player> players = new LinkedList<Player>();
+        //public LinkedList<Player> players = new LinkedList<Player>();
 
         public Game1()
         {
@@ -72,32 +73,51 @@ namespace AHGame
         public Vector2 getMidPointOfPlayers()
         {
             Vector2 midPoint = Vector2.Zero;
-            foreach (Player p in players)
+            List<Player> tempPlayers = playerSelect.getPlayers();
+            if (tempPlayers == null)
+                return Vector2.Zero;
+            foreach (Player p in tempPlayers)
             {
                 midPoint += p.Position;
             }
-            midPoint = new Vector2(midPoint.X / players.Count,
-                midPoint.Y / players.Count);
+            midPoint = new Vector2(midPoint.X / tempPlayers.Count,
+                midPoint.Y / tempPlayers.Count);
             return midPoint;
 
         }
 
+
+
         public void setUpControls()
         {
+            int numOfKeyBoards = 1;
             if (GamePad.GetState(PlayerIndex.One).IsConnected)
                 playerOneControls = new XboxInput(this, PlayerIndex.One);
             else
+            {
                 playerOneControls = new KeyBoardInput(this);
+                numOfKeyBoards--;
+            }
 
             if (GamePad.GetState(PlayerIndex.Two).IsConnected)
                 playerTwoControls = new XboxInput(this, PlayerIndex.Two);
             else
+            {
                 playerTwoControls = new KeyBoardInput(this);
+                if (numOfKeyBoards == 0)
+                    ((KeyBoardInput)playerTwoControls).secondControls();
+                numOfKeyBoards--;
+            }
 
             if (GamePad.GetState(PlayerIndex.Three).IsConnected)
                 playerThreeControls = new XboxInput(this, PlayerIndex.Three);
             else
+            {
                 playerThreeControls = new KeyBoardInput(this);//fix this
+                if(numOfKeyBoards==0)
+                    ((KeyBoardInput)playerThreeControls).secondControls();
+                numOfKeyBoards--;
+            }
 
             if (GamePad.GetState(PlayerIndex.Four).IsConnected)
                 playerFourControls = new XboxInput(this, PlayerIndex.Four);
@@ -114,6 +134,11 @@ namespace AHGame
         {
             sprites.Add(fname, new Sprite(Content, path));
             return 0;
+        }
+
+        public void addFont(String fileName)
+        {
+            fonts[0] = Content.Load<SpriteFont>("Fonts\\"+fileName);
         }
         public int addSpriteAni(String fname, String path)
         {
@@ -160,16 +185,34 @@ namespace AHGame
             LoadFileFromFolder("Title",addSpriteAni);
             //Add World1 Assets
             LoadFileFromFolder("World1Assets",addSprite);
+
             //Add Michael Assets
             LoadFileFromFolder("Michael",addSpriteAni);
+            //Add Gavin Assets
+            LoadFileFromFolder("Gavin", addSpriteAni);
+            //Add Jack Assets
+            LoadFileFromFolder("Jack", addSpriteAni);
+            //Add Ray Assets
+            LoadFileFromFolder("Ray", addSpriteAni);
+            //Add Ryan Assets
+            LoadFileFromFolder("Ryan", addSpriteAni);
+            //Add Geoff Assets
+            LoadFileFromFolder("Geoff", addSpriteAni);
+
             //Add Menu sounds
             LoadFileFromFolder("MenuSounds", sfxControl.addSound);
             //Add Player sounds
             LoadFileFromFolder("PlayerSounds", sfxControl.addSound);
             //LoadMusic
             LoadFileFromFolder("Songs", musicControl.addMusic);
+            //Load trees
+            LoadFileFromFolder("Trees", addSprite);
+            //Load playerSelectImages
+            LoadFileFromFolder("playerSelectImages", addSprite);
+            //Load mouse
+            LoadFileFromFolder("Mouse", addSprite);
 
-
+            addFont("PressStart2P");
             title.LoadContent();
 
 

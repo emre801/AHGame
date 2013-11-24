@@ -32,7 +32,7 @@ namespace AHGame
             g.nextLevel = true;
             g.drawingTool.blackAlphaOut=0;
             g.blackOut = true;
-            foreach (Player p in g.players)
+            foreach (Player p in g.playerSelect.getPlayers())
                 p.fixture.CollisionFilter.IgnoreCollisionWith(fixtureA);
 
             return false;

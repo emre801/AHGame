@@ -35,11 +35,14 @@ namespace AHGame
         bool lookLeft = true;
         int shiftValu = 0;
         int numJumps = 0;
-        public Player(Game1 g, Vector2 pos, Input input)
+        int maxNumJumps = 1;
+        public String ahName;
+        public Player(Game1 g, Vector2 pos, Input input,String ahName)
             :base(g)
         {
             this.g = g;
             this.pos = pos;
+            this.ahName = ahName;
             LoadContent();
             SetUpPhysics(pos);
             this.input = input;
@@ -47,6 +50,11 @@ namespace AHGame
             playerMode = PlayerMode.INAIR;
             onGround = false;
 
+        }
+
+        public void updateInput()
+        {
+            this.input.Update();
         }
         protected virtual void SetUpPhysics(Vector2 position)
         {
@@ -111,7 +119,7 @@ namespace AHGame
                 {
                     body.LinearVelocity = new Vector2(body.LinearVelocity.X, 0);
                     playerMode = PlayerMode.ONGROUND;
-                    numJumps = 2;
+                    numJumps = maxNumJumps;
                     return true;
                 }
                 else if (pColis.X > 0 && pColis.Y == 0)//{X:1 Y:0}
@@ -123,7 +131,7 @@ namespace AHGame
                         else
                             body.LinearVelocity = new Vector2(0, body.LinearVelocity.Y - body.LinearVelocity.X * 0.15f);
                         playerMode = PlayerMode.ONWALLRIGHT;
-                        numJumps = 2;
+                        numJumps = maxNumJumps;
                     }
 
                 }
@@ -136,7 +144,7 @@ namespace AHGame
                         else
                             body.LinearVelocity = new Vector2(0, body.LinearVelocity.Y + body.LinearVelocity.X * 0.15f);
                         playerMode = PlayerMode.ONWALLLEFT;
-                        numJumps = 2;
+                        numJumps = maxNumJumps;
                     }
 
                 }
@@ -152,7 +160,7 @@ namespace AHGame
         }
         public override void LoadContent()
         { 
-            currSpriteAni = g.getSpriteAni("MichaelBasic");
+            currSpriteAni = g.getSpriteAni(ahName+"Basic");
             currSprite = currSpriteAni.spriteStrip;
         }
         public override void Update()
@@ -169,8 +177,10 @@ namespace AHGame
             }
             if (playerMode==PlayerMode.ONGROUND)
             {
-                
+                if ((Math.Abs(body.LinearVelocity.X) < 8 * runningValue))
+                {
                     body.ApplyLinearImpulse(new Vector2(xDirect * 0.45f * runningValue, 0));
+                }
                 
                 if (xDirect == 0)
                     fixture.Friction = 80;
@@ -179,12 +189,15 @@ namespace AHGame
             }
             else
             {
-                body.ApplyLinearImpulse(new Vector2(xDirect * 0.95f * runningValue, 0));
+                if ((Math.Abs(body.LinearVelocity.X) < 10 * runningValue))
+                {
+                    body.ApplyLinearImpulse(new Vector2(xDirect * 0.55f * runningValue, 0));
+                }
                 if (playerMode == PlayerMode.INAIR)
                 {
                     if (yDirect < 0)
                     {
-                        body.ApplyLinearImpulse(new Vector2(0, -yDirect));
+                        body.ApplyLinearImpulse(new Vector2(0, -yDirect*0.3f));
                     }
                     else if (yDirect > 0)
                     {
@@ -200,16 +213,21 @@ namespace AHGame
                     fixture.Friction = 0;
             }
 
+            
+
+            /*
             if (body.LinearVelocity.X > 7*runningValue && playerMode==PlayerMode.ONGROUND)
             {
 
-                body.LinearVelocity = new Vector2(7*runningValue, body.LinearVelocity.Y);
+                //body.LinearVelocity = new Vector2(7*runningValue, body.LinearVelocity.Y);
+                body.ApplyLinearImpulse(new Vector2(xDirect * 0.45f * runningValue, 0));// inputState.getYDirection() * 300f));
+                
             }
             else if (body.LinearVelocity.X < -7 * runningValue && playerMode == PlayerMode.ONGROUND)
             {
-                body.LinearVelocity = new Vector2(-7*runningValue, body.LinearVelocity.Y);
+                //body.LinearVelocity = new Vector2(-7*runningValue, body.LinearVelocity.Y);
 
-            }
+            }*/
 
 
             if (playerMode == PlayerMode.ONGROUND && input.isJumpPressed())
@@ -266,16 +284,20 @@ namespace AHGame
             {
                 if (body.LinearVelocity.X != 0)
                 {
-                    
-                    currSpriteAni = g.getSpriteAni("MichaelWalking");
+
+                    currSpriteAni = g.getSpriteAni(ahName + "Walking");
+                    currSpriteAni.addSound(g.sfxControl.getSound("running"));
                     float velocity = Math.Abs(body.LinearVelocity.X);
                     if (velocity > 10)
-                        currSpriteAni = g.getSpriteAni("MichaelRunning");
+                    {
+                        currSpriteAni = g.getSpriteAni(ahName + "Running");
+                        currSpriteAni.addSound(g.sfxControl.getSound("running"));
+                    }
                     currSpriteAni.updateFrameRate(12f * (velocity/10));
                 }
                 else
                 {
-                    currSpriteAni = g.getSpriteAni("MichaelStand");
+                    currSpriteAni = g.getSpriteAni(ahName + "Stand");
                 }
                 if (body.LinearVelocity.X > 0)
                 {
@@ -288,7 +310,7 @@ namespace AHGame
             }
             else if (playerMode == PlayerMode.ONWALLLEFT || playerMode == PlayerMode.ONWALLRIGHT)
             {
-                currSpriteAni = g.getSpriteAni("MichaelWall");
+                currSpriteAni = g.getSpriteAni(ahName + "Wall");
                 if (playerMode == PlayerMode.ONWALLLEFT)
                 {
                     
@@ -313,18 +335,18 @@ namespace AHGame
                 }
                 if (body.LinearVelocity.Y > 0)
                 {
-                    currSpriteAni = g.getSpriteAni("MichaelAirDown");
+                    currSpriteAni = g.getSpriteAni(ahName + "AirDown");
                 }
                 else if (body.LinearVelocity.Y <= 0)
                 {
-                    currSpriteAni = g.getSpriteAni("MichaelAirUp");
+                    currSpriteAni = g.getSpriteAni(ahName + "AirUp");
                 }
 
 
             }
             else
             {
-                currSpriteAni = g.getSpriteAni("MichaelBasic");
+                currSpriteAni = g.getSpriteAni(ahName + "Basic");
 
             }
 

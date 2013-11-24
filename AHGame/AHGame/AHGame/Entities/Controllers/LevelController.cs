@@ -52,7 +52,7 @@ namespace AHGame
             g.world2 = new FarseerPhysics.Dynamics.World(new Vector2(0, 0));
             g.drawingTool.blackAlpha = 1;
             g.restartLevel = false;
-            g.players.Clear();
+            //g.players.Clear();
             g.drawingTool.cam._pos = new Vector2(-100, -100);
             readLevel();
 
@@ -88,6 +88,14 @@ namespace AHGame
                     continue;
 
                 }
+                if (words[0].Equals("Demi"))
+                {
+                    g.drawingTool.demension = new Rectangle((int)System.Convert.ToSingle(words[1]), (int)System.Convert.ToSingle(words[2]),
+                         (int)System.Convert.ToSingle(words[3]),
+                         (int)System.Convert.ToSingle(words[4]));
+                    continue;
+
+                }
                 if(words[0].Equals("CPOS"))
                 {
                     float xCamPos = System.Convert.ToSingle(words[1]);
@@ -119,7 +127,7 @@ namespace AHGame
                 if (words[3].Equals("DeathBlock"))
                 {
                     Sprite sprite = g.getSprite(spriteName);
-                    Block newBlock = new Block(g, new Vector2(x, y), spriteName, sprite.index.Height, sprite.index.Width, 0, true, System.Convert.ToSingle(words[4]),true);
+                    Block newBlock = new Block(g, new Vector2(x, y), spriteName, sprite.index.Height, sprite.index.Width, 0.1f, true, System.Convert.ToSingle(words[4]),true);
                     blocks.AddFirst(newBlock);
 
                 }
@@ -129,15 +137,30 @@ namespace AHGame
                     GoalBlock goalBlock = new GoalBlock(g, new Vector2(x, y), spriteName, sprite.index.Height, sprite.index.Width);
                     blocks.AddFirst(goalBlock);
                 }
+                if (words[3].Equals("SuperBack"))
+                {
+                    Sprite sprite = g.getSprite(spriteName);
+                    Block newBlock = new Block(g, new Vector2(x, y), spriteName, System.Convert.ToSingle(words[4]), System.Convert.ToSingle(words[5]), 0, false, 0, false);
+                    blocks.AddFirst(newBlock);
+                }
 
             }
 
             foreach (Block block in blocks)
                 g.addEntity(block);
 
-            Player player = new Player(g, new Vector2(0, 0), g.playerOneControls);
-            g.players.AddLast(player);
-            g.addEntity(player);
+            //Player player = new Player(g, new Vector2(0, 0), g.playerOneControls,"Michael");
+            g.playerSelect.setPlayers();
+            List<Player> players = g.playerSelect.getPlayers();
+
+            foreach (Player p in players)
+            {
+                g.addEntity(p);
+                foreach (Player p2 in players)
+                    p2.fixture.CollisionFilter.IgnoreCollisionWith(p.fixture);
+            }
+            //g.players.AddLast(player);
+           // g.addEntity(player);
 
         }
         public void writeLevel()
