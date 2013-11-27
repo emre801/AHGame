@@ -45,6 +45,7 @@ namespace AHGame
         }
         public abstract bool OnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact);
         protected abstract void SetUpPhysics(Vector2 position);
+        public abstract String getStringForWrite();
 
     }
 }

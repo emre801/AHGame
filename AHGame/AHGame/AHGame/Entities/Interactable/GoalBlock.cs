@@ -24,8 +24,6 @@ namespace AHGame
             : base(g, pos, sName, height, width, 15, false, 0, true)
         {
 
-
-
         }
         public override bool OnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
@@ -36,6 +34,12 @@ namespace AHGame
                 p.fixture.CollisionFilter.IgnoreCollisionWith(fixtureA);
 
             return false;
+        }
+        public override string getStringForWrite()
+        {
+            //1018 -1 ahLogo GoalBlock 2 
+            String write = origPos.X + " " + origPos.Y + " " + sName + " GoalBlock";
+            return write;
         }
     }
 }

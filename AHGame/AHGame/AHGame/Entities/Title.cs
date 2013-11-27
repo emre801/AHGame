@@ -100,7 +100,7 @@ namespace AHGame
                 }
                 else if (input.isUpPressed())
                 {
-                    if (!Constants.ENABLE_CREATOR)
+                    if (Constants.ENABLE_CREATOR)
                     {
                         if (cursorPos == exit)
                             cursorPos = creator;
@@ -109,7 +109,7 @@ namespace AHGame
                         else if (cursorPos == creator)
                             cursorPos = options;
                         else
-                            cursorPos = options;
+                            cursorPos = start;
 
                     }
                     else

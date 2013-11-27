@@ -18,6 +18,7 @@ namespace AHGame
         bool p1Active, p2Active, p3Active, p4Active;
         List<Player> players;
         String[] names;
+        Sprite bgSquare;
         public PlayerSelect(Game1 game)
             :base(game)
         {
@@ -29,6 +30,15 @@ namespace AHGame
             names[3] = "Jack";
             names[4] = "Geoff";
             names[5] = "Ray";
+            
+        }
+
+        public override void LoadContent()
+        {
+            p1Av = g.getSprite("joinGame");
+            p2Av = g.getSprite("joinGame");
+            p3Av = g.getSprite("joinGame");
+            p4Av = g.getSprite("joinGame");
         }
 
         public void setPlayers()
@@ -192,22 +202,15 @@ namespace AHGame
         public override void Draw(SpriteBatch spriteBatch)
         {
             updateAvatars();
-            if (p1Active)
-            {
-                drawTitleInfo(spriteBatch, p1Av, p1Av, 1f, 0.5f, 0.225f);
+            g.drawingTool.DrawText(spriteBatch, Constants.GAME_WORLD_WIDTH *0.2f, Constants.GAME_WORLD_HEIGHT * 0.1f, "Player Select", 1, 1);
+            g.drawingTool.DrawText(spriteBatch, Constants.GAME_WORLD_WIDTH * 0.2f, Constants.GAME_WORLD_HEIGHT * 0.90f, "Choose your character", 1, 1);
+            drawTitleInfo(spriteBatch, p1Av, p1Av, 1f, 0.5f, 0.225f);
                 /*drawTitleInfo(spriteBatch, p1Av, p1Av, 1f, 0.5f, 0.475f);
                 drawTitleInfo(spriteBatch, p1Av, p1Av, 1f, 0.5f, 0.725f);
                 drawTitleInfo(spriteBatch, p1Av, p1Av, 1f, 0.5f, 0.975f);*/
-            }
-            if (p2Active)
-            {
-                drawTitleInfo(spriteBatch, p2Av, p2Av, 1f, 0.5f, 0.475f);
-            }
-            //if (p3Active)
-            //{
-            //    drawTitleInfo(spriteBatch, p3Av, p3Av, 1f, 0.5f, 0.725f);
-            //}
-                //spriteBatch.Draw(p1Av.index, new Vector2(0, 0), Color.White);
+            
+            drawTitleInfo(spriteBatch, p2Av, p2Av, 1f, 0.5f, 0.475f);
+           
         }
 
 

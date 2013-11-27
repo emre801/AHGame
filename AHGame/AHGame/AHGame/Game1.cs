@@ -27,6 +27,8 @@ namespace AHGame
         public List<Entity> entities = new List<Entity>();
         public List<Entity> entitiesToAdd = new List<Entity>();
         public List<Entity> entitiesToRemove = new List<Entity>();
+        public LinkedList<String> blockNames = new LinkedList<String>();
+        public String[] blockArray;
         //Player controls
         public Input playerOneControls;
         public Input playerTwoControls;
@@ -34,6 +36,7 @@ namespace AHGame
         public Input playerFourControls;
 
         Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
+        public Sprite[] spriteDict;
         Dictionary<string, SpriteStripAnimationHandler> spritesAni = new Dictionary<string, SpriteStripAnimationHandler>();
         public Title title;
         public PlayerSelect playerSelect;
@@ -132,6 +135,7 @@ namespace AHGame
         }
         public int addSprite(String fname, String path)
         {
+            blockNames.AddLast(fname);
             sprites.Add(fname, new Sprite(Content, path));
             return 0;
         }
@@ -178,6 +182,60 @@ namespace AHGame
             base.Initialize();
         }
 
+        public int addUserSprite(String fname, String path)
+        {
+            Texture2D file;
+            RenderTarget2D result;
+            GraphicsDevice gd = drawingTool.getGraphicsDevice();
+            path = "Content//" + path + ".png";
+            using (FileStream sourceStream = new FileStream(path, FileMode.Open))
+            {
+                file = Texture2D.FromStream(gd, sourceStream);
+            }
+            result = new RenderTarget2D(gd, file.Width, file.Height);
+            gd.SetRenderTarget(result);
+            gd.Clear(Color.Black);
+
+            var blendColor = new BlendState
+            {
+                ColorWriteChannels = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+                AlphaDestinationBlend = Blend.Zero,
+                ColorDestinationBlend = Blend.Zero,
+                AlphaSourceBlend = Blend.SourceAlpha,
+                ColorSourceBlend = Blend.SourceAlpha
+            };
+
+            var spriteBatch = new SpriteBatch(gd);
+            spriteBatch.Begin(SpriteSortMode.Immediate, blendColor);
+            spriteBatch.Draw(file, file.Bounds, Color.White);
+            spriteBatch.End();
+
+            //Now copy over the alpha values from the PNG source texture to the final one, without multiplying them
+            var blendAlpha = new BlendState
+            {
+                ColorWriteChannels = ColorWriteChannels.Alpha,
+                AlphaDestinationBlend = Blend.Zero,
+                ColorDestinationBlend = Blend.Zero,
+                AlphaSourceBlend = Blend.One,
+                ColorSourceBlend = Blend.One
+            };
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, blendAlpha);
+            spriteBatch.Draw(file, file.Bounds, Color.White);
+            spriteBatch.End();
+
+            //Release the GPU back to drawing to the screen
+            gd.SetRenderTarget(null);
+
+            Texture2D finalFile = result as Texture2D;
+            //Sprite sp = new Sprite(finalFile, fname);
+
+            blockNames.AddLast(fname);
+            sprites.Add(fname, new Sprite(finalFile, fname));
+
+            return 0;
+        }
+
         
         protected override void LoadContent()
         {
@@ -211,13 +269,22 @@ namespace AHGame
             LoadFileFromFolder("playerSelectImages", addSprite);
             //Load mouse
             LoadFileFromFolder("Mouse", addSprite);
+            //Load User images
+            LoadFileFromFolder("UserImages", addUserSprite);
 
             addFont("PressStart2P");
             title.LoadContent();
 
+            spriteDict = new Sprite[sprites.Count];
+            sprites.Values.CopyTo(spriteDict,0);
+            playerSelect.LoadContent();
 
             black = getSprite("black");
+            blockArray = new String[blockNames.Count];
+            blockNames.CopyTo(blockArray, 0);
         }
+
+
 
         //pass in the folder name, and it'll automatically run trough files
         //then it'll run the appropriate add method ex addSprite, addMusic,addSFX

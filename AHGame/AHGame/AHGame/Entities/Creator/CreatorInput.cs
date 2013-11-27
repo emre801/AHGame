@@ -22,7 +22,10 @@ namespace AHGame
         Keys rotate { get; set; }
         Keys changeLayerUp{ get; set; }
         Keys changeLayerDown { get; set; }
-
+        Keys iterateBlockUp { get; set; }
+        Keys iterateBlockDown { get; set; }
+        Keys writeLevel { get; set; }
+        Keys shift { get; set; }
         public CreatorInput()
         {
             up = Keys.Up;
@@ -33,24 +36,28 @@ namespace AHGame
             rotate = Keys.R;
             changeLayerUp = Keys.A;
             changeLayerDown = Keys.S;
+            writeLevel = Keys.W;
+            iterateBlockUp = Keys.Y;
+            iterateBlockDown = Keys.T;
+            shift=Keys.LeftShift;
         }
         //TODO: add changing of layer stuff, taking break
 
         public bool isUpPressed()
         {
-            return previousKeyboardState.IsKeyUp(up) && keyboardState.IsKeyDown(up);
+            return  keyboardState.IsKeyDown(up);
         }
         public bool isDownPressed()
         {
-            return previousKeyboardState.IsKeyUp(down) && keyboardState.IsKeyDown(down);
+            return keyboardState.IsKeyDown(down);
         }
         public bool isLeftPressed()
         {
-            return previousKeyboardState.IsKeyUp(left) && keyboardState.IsKeyDown(left);
+            return keyboardState.IsKeyDown(left);
         }
         public bool isRightPressed()
         {
-            return previousKeyboardState.IsKeyUp(right) && keyboardState.IsKeyDown(right);
+            return keyboardState.IsKeyDown(right);
         }
         public bool isRotatePressed()
         {
@@ -69,14 +76,42 @@ namespace AHGame
             return previousKeyboardState.IsKeyUp(changeBlockType) && keyboardState.IsKeyDown(changeBlockType);
         }
 
-        public bool isMousePressed()
+        public bool isLeftMousePressed()
         {
             return previosMouseState.LeftButton == ButtonState.Released && mouseState.LeftButton == ButtonState.Pressed;
         }
 
-        public bool isMouseReleased()
+        public bool isLeftMouseReleased()
         {
             return previosMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released;
+        }
+
+        public bool isRightMousePressed()
+        {
+            return previosMouseState.RightButton == ButtonState.Released && mouseState.RightButton == ButtonState.Pressed;
+        }
+
+        public bool isRightMouseReleased()
+        {
+            return previosMouseState.RightButton == ButtonState.Pressed && mouseState.RightButton == ButtonState.Released;
+        }
+
+        public bool isWritePressed()
+        {
+            return previousKeyboardState.IsKeyUp(writeLevel) && keyboardState.IsKeyDown(writeLevel);
+        }
+
+        public bool isIterateBlockUpPressed()
+        {
+            return previousKeyboardState.IsKeyUp(iterateBlockUp) && keyboardState.IsKeyDown(iterateBlockUp);
+        }
+        public bool isIterateBlockDownPressed()
+        {
+            return previousKeyboardState.IsKeyUp(iterateBlockDown) && keyboardState.IsKeyDown(iterateBlockDown);
+        }
+        public bool isShiftPressed()
+        {
+            return previousKeyboardState.IsKeyUp(shift) && keyboardState.IsKeyDown(shift);
         }
 
         public void Update()

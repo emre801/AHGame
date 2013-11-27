@@ -60,6 +60,26 @@ namespace AHGame
             }
             return true;
         }
+        public override string getStringForWrite()
+        {
+            if (!isDeathBlock)
+            {
+                String write = (int)origPos.X + " " + (int)origPos.Y + " " + sName + " Block " + (int)height + " " + (int)width + " " + drawLevel + " " + rotationAngle + " ";
+                if (interactWithPlayer)
+                    write += 1;
+                else
+                    write += 0;
+                return write;
+            }
+            else
+            {
+                //-394 -583 deathSpikes DeathBlock 90
+                String write = (int)origPos.X + " " + (int)origPos.Y + " " + sName + " DeathBlock " + rotationAngle;
+                return write;
+            }
+            
+        }
+
         protected override void SetUpPhysics(Vector2 position)
         {
             float mass = 1000;

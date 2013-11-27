@@ -43,5 +43,10 @@ namespace AHGame
             body.AngularDamping = 1f;
             body.Rotation = rotationAngle * (float)Math.PI / 180f;
         }
+        public override string getStringForWrite()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

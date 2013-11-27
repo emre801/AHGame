@@ -121,7 +121,7 @@ namespace AHGame
                 if (words[3].Equals("Block"))
                 {
                     bool interactWithPlayer=Convert.ToInt32(words[8])==1?true:false;
-                    Block newBlock= new Block(g,new Vector2(x,y),spriteName,System.Convert.ToSingle(words[4]), System.Convert.ToSingle(words[5]), Convert.ToInt32(words[6])+10,false,(Convert.ToInt32(words[7])),interactWithPlayer);
+                    Block newBlock = new Block(g, new Vector2(x, y), spriteName, System.Convert.ToSingle(words[4]), System.Convert.ToSingle(words[5]), System.Convert.ToSingle(words[6]) + 10, false, (Convert.ToInt32(words[7])), interactWithPlayer);
                     blocks.AddFirst(newBlock);
                 }
                 if (words[3].Equals("DeathBlock"))

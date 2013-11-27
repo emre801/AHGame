@@ -14,6 +14,7 @@ namespace AHGame
         public Texture2D index;
         public Vector2 origin;
         public Rectangle BBox;
+        public String sName;
 
         /**
          * Constructor

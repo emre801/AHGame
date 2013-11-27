@@ -85,11 +85,13 @@ namespace AHGame
                     break;
                 case Game1.gameStates.CREATOR:
                     gdm.GraphicsDevice.Clear(Color.Green);
-                    drawCreatorGui();
+                    
                     drawEntities(game.entities);
+                    drawCreatorGui();
+                    //game.cb.DrawMouse(spriteBatch);
                     break;
                 case Game1.gameStates.PLAYERSELECT:
-                    gdm.GraphicsDevice.Clear(Color.Purple);
+                    gdm.GraphicsDevice.Clear(Color.Black);
                     drawPlayerSelect(game.playerSelect);
                     break;
             }
@@ -102,27 +104,35 @@ namespace AHGame
             DrawText(spriteBatch, 0, 0, "Testing", 0.5f, 1);
             DrawText(spriteBatch, 0, 20, game.cb.getBlockType(), 0.5f, 1);
             DrawText(spriteBatch, 0, 40, game.cb.getPositionAsString(), 0.5f, 1);
+            DrawText(spriteBatch, 0, 60, game.cb.spriteCounter +"/"+(game.blockArray.Length-1), 0.5f, 1);
+            DrawText(spriteBatch, 0, 80, "Drawlevel: "+game.cb.drawLevel, 0.5f, 1);
+            DrawText(spriteBatch, 0, 100, "Drag Image: " + game.cb.clickToDrag, 0.5f, 1);
             //DrawText(spriteBatch, 0, 60, game.cb.getRotationAsString(), 0.5f, 1);
             endBatch();
-
-
-
         }
 
 
         internal void drawEntities(List<Entity> entities)
         {
             
+            //if(game.currState==Game1.gameStates.GAME)
+            if (game.currState == Game1.gameStates.CREATOR)
+            {
+                beginBatchWithCam();
+                game.cb.drawBackgroundPatter(spriteBatch);
+                endBatch();
+            }
+           
             beginBatchWithCam();
-            //beginBatch();
-                    
+            
             foreach (Entity e in entities)
                 e.Draw(spriteBatch);
+            
             endBatch();
             beginBatch();
             spriteBatch.Draw(game.black.index, new Rectangle(0, 0, (int)Constants.DESIRED_GAME_RESOLUTION_WIDTH, (int)Constants.DESIRED_GAME_RESOLUTION_HEIGHT), Color.White*blackAlpha);
             spriteBatch.Draw(game.black.index, new Rectangle(0, 0, (int)Constants.DESIRED_GAME_RESOLUTION_WIDTH, (int)Constants.DESIRED_GAME_RESOLUTION_HEIGHT), Color.White * blackAlphaOut);
-            
+           
             endBatch();
             bool hasTicked = blackTicker.hasTicked();
             if (hasTicked && blackAlpha > 0)
@@ -134,7 +144,13 @@ namespace AHGame
                 blackAlphaOut += 0.2f;
 
             }
-
+            if (game.currState == Game1.gameStates.CREATOR)
+            {
+                beginBatchWithCam();
+                game.cb.DrawMouse(spriteBatch);
+                endBatch();
+            }
+            
         }
 
         public void followPlayer()
@@ -194,22 +210,25 @@ namespace AHGame
 
 
         }
+        public GraphicsDevice getGraphicsDevice()
+        {
+            return gdm.GraphicsDevice;
+        }
 
 
         public void Update()
         {
             if(game.currState==Game1.gameStates.GAME)
                 followPlayer();
+            if (game.currState == Game1.gameStates.CREATOR)
+                moveCameraManually();
 
         }
-        public void moveCameraManually(Input input)
+        public void moveCameraManually()
         {
-            /*
-            float x = input.moveHorizontal()*-10f;
-            float y = input.moveVertical()*-10f;
+            float x = game.cb.horizontalValue()*10;
+            float y = game.cb.verticalValue()*10;
             cam.Move(new Vector2(x,y));
-            if (input.isJumpPressed())
-                cam.Zoom -= 0.1f;*/
         }
 
 
