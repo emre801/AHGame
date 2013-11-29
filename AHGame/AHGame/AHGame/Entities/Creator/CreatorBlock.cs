@@ -21,12 +21,15 @@ namespace AHGame
         Sprite cursor;
         CreatorInput ci;
         Vector2 p1;
-        public int drawLevel = 0;
+        public int drawLevel = 50;
         String blockName;
         Sprite sprite;
         SpriteStripAnimationHandler bgSquare;
         public int spriteCounter = 0;
         public bool clickToDrag = false;
+        float camZoom = 0.5f;
+        Vector2 camPos = Vector2.Zero;
+        SpriteStripAnimationHandler player;
         public CreatorBlock(Game1 g)
             : base(g)
         {
@@ -37,6 +40,7 @@ namespace AHGame
             blockName = g.blockArray[spriteCounter];
             sprite = g.getSprite(blockName);
             mousePosition = MousePosition.Ideal;
+            player = g.getSpriteAni("MichaelStand");
         }
 
         public String getPositionAsString()
@@ -99,18 +103,37 @@ namespace AHGame
             deleteBlock();
             changeBlock();
             changeDrawLayer();
+            changeCamera();
 
         }
+        public void changeCamera()
+        {
+            if (ci.isCamZoomInPressed())
+            {
+                g.drawingTool.cam.Zoom += 0.1f;
+            }
+            if (ci.isCamZoomOutPressed())
+            {
+                g.drawingTool.cam.Zoom -= 0.1f;
+            }
+            if (ci.isSetCamZoomPressed())
+            {
+                camZoom = g.drawingTool.cam.Zoom;
+                camPos = g.drawingTool.cam.Pos;
+            }
+
+        }
+
         public void changeDrawLayer()
         {
             if (ci.isChangeLayerUpPressed())
                 drawLevel++;
             if (ci.isChangeLayerDownPressed())
                 drawLevel--;
-            if (drawLevel < 0)
+            if (drawLevel < 1)
                 drawLevel = 100;
             if (drawLevel > 100)
-                drawLevel = 0;
+                drawLevel = 1;
         }
 
         public void changeBlock()
@@ -145,7 +168,7 @@ namespace AHGame
             if (ci.isWritePressed())
             {
                 LinkedList<String> lines = new LinkedList<String>();
-                String path = @"Content\\CreatorLevels\\Level1.txt";
+                String path = @"Content\\CreatorLevels\\CustomLevel.txt";
                 foreach (Entity e in g.entities)
                 {
                     if (e is Interactable)
@@ -154,6 +177,10 @@ namespace AHGame
                         lines.AddLast(i.getStringForWrite());
                     }
                 }
+                lines.AddLast("CAM " + camZoom);
+                lines.AddLast("CPOS " + camPos.X + " " + camPos.Y);
+                lines.AddLast("BGCOLOR 167 218 220");
+                lines.AddLast("Demi -349 1182 -532 795");
                 System.IO.File.WriteAllLines(path, lines);
             }
 
@@ -251,7 +278,8 @@ namespace AHGame
             //float height=Math.Abs(p1.Y-position.Y);
             if (width == 0 || height == 0)
                 return;
-            Block b = new Block(g, p1+new Vector2(width/2,height/2), blockName, height, width, (drawLevel+1)/101f, false, (float)rotation, true);
+            
+            Block b = new Block(g, p1+new Vector2(width/2,height/2), blockName, height, width, (drawLevel)/100f, false, (float)rotation, (drawLevel/100f)==0.5f);
             g.addEntity(b);
         }
         public void createDeathBlock(float width,float height)
@@ -323,6 +351,7 @@ namespace AHGame
                 spriteBatch.Draw(sprite.index, new Rectangle((int)(position.X + shift.X), (int)(position.Y + shift.Y), (int)width, (int)height), new Rectangle(0, 0, (int)sprite.index.Width, (int)sprite.index.Height), Color.White,
                 (float)(rotation * Math.PI / 180f), Vector2.Zero, SpriteEffects.None, 0);
             }
+            player.draw(spriteBatch, new Rectangle((int)0, (int)0, player.widthOf(), player.heightOf()), Color.White, Vector2.Zero, true, 0.5f);
 
         }
 
@@ -330,7 +359,7 @@ namespace AHGame
         {
             for (int i = -3000; i < 3000; i += bgSquare.widthOf() / 2)
                 for (int j = -3000; j < 3000; j += bgSquare.heightOf() / 2)
-                    bgSquare.draw(spriteBatch, new Rectangle(i, j, (int)bgSquare.widthOf(), (int)bgSquare.heightOf()), Color.White * 0.35f * 1, new Vector2(0, 0), false);
+                    bgSquare.draw(spriteBatch, new Rectangle(i, j, (int)bgSquare.widthOf(), (int)bgSquare.heightOf()), Color.White * 0.35f * 1, new Vector2(0, 0), false,0.5f);
 
         }
         public void DrawMouse(SpriteBatch spriteBatch)

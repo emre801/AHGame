@@ -364,7 +364,7 @@ namespace AHGame
             else
             {*/
                 currSpriteAni.draw(spriteBatch, new Rectangle((int)ConvertUnits.ToDisplayUnits(body.Position.X)-shiftValu,
-                   (int)ConvertUnits.ToDisplayUnits(body.Position.Y), (int)currSpriteAni.widthOf(), (int)currSpriteAni.heightOf()), Color.White,origin,lookLeft);
+                   (int)ConvertUnits.ToDisplayUnits(body.Position.Y), (int)currSpriteAni.widthOf(), (int)currSpriteAni.heightOf()), Color.White,origin,lookLeft,0.5f);
 
             //}
         

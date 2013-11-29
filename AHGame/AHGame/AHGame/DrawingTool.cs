@@ -107,6 +107,8 @@ namespace AHGame
             DrawText(spriteBatch, 0, 60, game.cb.spriteCounter +"/"+(game.blockArray.Length-1), 0.5f, 1);
             DrawText(spriteBatch, 0, 80, "Drawlevel: "+game.cb.drawLevel, 0.5f, 1);
             DrawText(spriteBatch, 0, 100, "Drag Image: " + game.cb.clickToDrag, 0.5f, 1);
+            DrawText(spriteBatch, 0, 120, "CamPos: " + cam.Pos, 0.5f, 1);
+            DrawText(spriteBatch, 0, 160, "CamZoom: " +cam.Zoom, 0.5f, 1);
             //DrawText(spriteBatch, 0, 60, game.cb.getRotationAsString(), 0.5f, 1);
             endBatch();
         }

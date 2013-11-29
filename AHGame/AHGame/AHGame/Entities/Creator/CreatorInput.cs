@@ -26,6 +26,9 @@ namespace AHGame
         Keys iterateBlockDown { get; set; }
         Keys writeLevel { get; set; }
         Keys shift { get; set; }
+        Keys camZoomIn { get; set; }
+        Keys camZoomOut { get; set; }
+        Keys setCamZoom { get; set; }
         public CreatorInput()
         {
             up = Keys.Up;
@@ -40,6 +43,10 @@ namespace AHGame
             iterateBlockUp = Keys.Y;
             iterateBlockDown = Keys.T;
             shift=Keys.LeftShift;
+            camZoomIn = Keys.J;
+            camZoomOut = Keys.K;
+            setCamZoom = Keys.L;
+
         }
         //TODO: add changing of layer stuff, taking break
 
@@ -112,6 +119,19 @@ namespace AHGame
         public bool isShiftPressed()
         {
             return previousKeyboardState.IsKeyUp(shift) && keyboardState.IsKeyDown(shift);
+        }
+        public bool isCamZoomInPressed()
+        {
+            return previousKeyboardState.IsKeyUp(camZoomIn) && keyboardState.IsKeyDown(camZoomIn);
+        }
+
+        public bool isCamZoomOutPressed()
+        {
+            return previousKeyboardState.IsKeyUp(camZoomOut) && keyboardState.IsKeyDown(camZoomOut);
+        }
+        public bool isSetCamZoomPressed()
+        {
+            return previousKeyboardState.IsKeyUp(setCamZoom) && keyboardState.IsKeyDown(setCamZoom);
         }
 
         public void Update()

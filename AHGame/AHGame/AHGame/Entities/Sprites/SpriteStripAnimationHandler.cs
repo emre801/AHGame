@@ -135,19 +135,19 @@ namespace AHGame
                 spriteBatch.Draw(spriteStrip.index, drawPos, texBounds, Color.White, rotation, origin - shiftPosition, 1, SpriteEffects.FlipHorizontally, 0);
         }
 
-        public void draw(SpriteBatch spriteBatch, Rectangle desti, Color color,Vector2 origin, bool lookLeft)
+        public void draw(SpriteBatch spriteBatch, Rectangle desti, Color color,Vector2 origin, bool lookLeft, float drawLevel)
         {
             Rectangle shiftedDesti = new Rectangle(desti.X + 5, desti.Y - 5, desti.Width, desti.Height);
             if (lookLeft)
             {
-                spriteBatch.Draw(spriteStrip.index, desti, texBounds, color, 0, origin, SpriteEffects.None, 0.1f);
+                spriteBatch.Draw(spriteStrip.index, desti, texBounds, color, 0, origin, SpriteEffects.None, drawLevel+0.001f);
 
-                spriteBatch.Draw(spriteStrip.index, shiftedDesti, texBounds, Color.Black*0.3f, 0, origin, SpriteEffects.None, 0);
+                spriteBatch.Draw(spriteStrip.index, shiftedDesti, texBounds, Color.Black*0.3f, 0, origin, SpriteEffects.None, drawLevel);
             }
             else
             {
-                spriteBatch.Draw(spriteStrip.index, desti, texBounds, color, 0, origin, SpriteEffects.FlipHorizontally, 0.1f);
-                spriteBatch.Draw(spriteStrip.index, shiftedDesti, texBounds, Color.Black*0.3f, 0, origin, SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(spriteStrip.index, desti, texBounds, color, 0, origin, SpriteEffects.FlipHorizontally, drawLevel + 0.001f);
+                spriteBatch.Draw(spriteStrip.index, shiftedDesti, texBounds, Color.Black * 0.3f, 0, origin, SpriteEffects.FlipHorizontally, drawLevel);
             }
         }
 

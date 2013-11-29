@@ -166,7 +166,7 @@ namespace AHGame
         {
             for (int i = 0; i < Constants.DESIRED_GAME_RESOLUTION_WIDTH; i += bgSquare.widthOf() / 2)
                 for (int j = 0; j < Constants.DESIRED_GAME_RESOLUTION_HEIGHT; j += bgSquare.heightOf() / 2)
-                    bgSquare.draw(spriteBatch, new Rectangle(i, j, (int)bgSquare.widthOf(), (int)bgSquare.heightOf()), Color.White * 0.35f * titleAlpha, new Vector2(0, 0), false);
+                    bgSquare.draw(spriteBatch, new Rectangle(i, j, (int)bgSquare.widthOf(), (int)bgSquare.heightOf()), Color.White * 0.35f * titleAlpha, new Vector2(0, 0), false,0.5f);
             
         }
 
